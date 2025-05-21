@@ -6,7 +6,7 @@
  Author: Julien Tinguely
  Comments-Summary: No comments yet
  Status: Draft
- Type: Governance
+ Type: Standards Track
  Created: 2025-04-21
  Approved: N/A
  License: CC0-1.0
