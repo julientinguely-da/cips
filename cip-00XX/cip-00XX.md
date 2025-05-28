@@ -34,7 +34,19 @@ This introduces some potential for conflict: if multiple SV applications submit 
 for example, all attempt to advance the mining rounds at the same time, only one of them will succeed and the others fail, that is,
 they contend with each other. Importantly, this is not a correctness issue: The Daml code already handles this case; for example, it can successfully manage if the delegate crashes during a submission and tries to resubmit the same command. But the failed transactions introduce unnecessary load on the network.
 
-To minimize the impact, each SV application adds a random delay before each attempt and retries with a random backoff.
+To minimize contention, each SV application introduces a random delay before attempting a task and uses a retry mechanism with randomized backoff.
+To ensure that these delays are evenly distributed, scalable with the number of SVs, and remain within the polling interval, delays are sampled from a uniform distribution:
+`Uniform(0, max(n * expectedTaskDuration, pollingInterval))`, where:
+- `n` is the number of SVs,
+- `expectedTaskDuration` is the estimated duration of a command execution (default: 5 seconds), and
+- `pollingInterval` is the interval between polling trigger calls (default: 30 seconds).
+
+The retry mechanism uses an initial delay of `expectedTaskDuration`, with a maximum backoff delay capped at `2 * expectedTaskDuration`.
+The `expectedTaskDuration` value is configurable via the Helm chart, allowing adjustments if needed.
+
+After the delay has passed, the SV application either succeeds submitting the command, fail because of contention or realise the command has already been submitted by another SV.
+Each automation trigger already includes a staleness check to determine if the associated task has already been completed or archived. 
+
 A new metric named `splice_trigger_attempted_total` is added to monitor trigger failures caused by contention and help in choosing good delay and backoff parameters.
 
 ### SV UI
@@ -67,6 +79,12 @@ based on 24-hour sampling periods. The script used for this analysis is availabl
 While more complex approaches to minimize contention would be possible, 
 e.g., defining a clear order in which SVs should attempt to process a given task that is determined based on some task identifier, 
 the implementation complexity of that does not seem to be justified.
+
+### Risks and mitigations
+
+If for some reason an automation trigger ends up overloading with too much contention and causing cascading failures, 
+the SV application allows [pausing individual triggers](https://github.com/hyperledger-labs/splice/blob/8c6506cd4fa76d30254cab3cbe823b344ea933bc/cluster/images/sv-app/app.conf#L71). 
+It can also be specified using the `ADDITIONAL_CONFIG*` environment variable.
 
 ## Backwards compatibility
 
