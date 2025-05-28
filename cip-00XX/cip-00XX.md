@@ -41,7 +41,7 @@ To ensure that these delays are evenly distributed, scalable with the number of 
 - `expectedTaskDuration` is the estimated duration of a command execution (default: 5 seconds), and
 - `pollingInterval` is the interval between polling trigger calls (default: 30 seconds).
 
-The retry mechanism uses an initial delay of `expectedTaskDuration`, with a maximum backoff delay capped at `2 * expectedTaskDuration`.
+The retry mechanism uses exponential backoff (the delay doubles each time) with an initial delay of `expectedTaskDuration`, with a maximum backoff delay capped at `2 * expectedTaskDuration`.
 The `expectedTaskDuration` value is configurable via the Helm chart, allowing adjustments if needed.
 
 After the delay has passed, the SV application either succeeds submitting the command, fails because of contention or realises the command has already been submitted by another SV.
