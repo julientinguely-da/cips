@@ -50,8 +50,10 @@ Global Synchronizer CIPs
 | [cip-0053](/cip-0053/cip-0053.md) |  |  AngelHack as a Weight 2.5 SV | Eric Saraniecki | Governance   | Approved |
 | [cip-0054](/cip-0054/cip-0054.md) |  | Add Figment as a Weight 1 Super Validator | Eric Saraniecki, Jacob McCrum | Governance   | Approved |
 | [cip-0055](/cip-0055/cip-0055.md) |  | Add Bitwave as a Weight 1 SV | Eric Saraniecki | Governance   | Approved |
+| [cip-0056](/cip-0056/cip-0056.md) |  | Canton Network Token Standard | Simon Meier, Matteo Limberto, Moritz Kiefer | Standards Track   | Approved |
 | [cip-0057](/cip-0057/cip-0057.md) |  | Add Quantstamp as a Weight 1 Super Validator | Eric Saraniecki | Governance  | Approved |
 | [cip-0058](/cip-0058/cip-0058.md) |  | Add IntellectEU as Weight 1 SV |Christopher Kelly | Governance  | Approved |
 | [cip-0059](/cip-0059/cip-0059.md) |  | Add Woodside AI as an SV of Weight 10 | Eric Saraniecki | Governance  | Approved |
 | [cip-0060](/cip-0060/cip-0060.md) |  | Add Zero Hash as SV of Weight 7.5 | Eric Saraniecki | Governance  | Approved |
+| [cip-0062](/cip-0062/cip-0062.md) |  | Synchronizer Migration with Downtime to Splice 0.4.0 / Canton 3.3| Curtis Hrischuk| Standards | Approved |
 | [cip-0064](/cip-0064/cip-0064.md) |  | Delegateless Automation | Julien Tinguely | Standards Track  | Draft |
