@@ -44,7 +44,7 @@ To ensure that these delays are evenly distributed, scalable with the number of 
 The retry mechanism uses an initial delay of `expectedTaskDuration`, with a maximum backoff delay capped at `2 * expectedTaskDuration`.
 The `expectedTaskDuration` value is configurable via the Helm chart, allowing adjustments if needed.
 
-After the delay has passed, the SV application either succeeds submitting the command, fail because of contention or realise the command has already been submitted by another SV.
+After the delay has passed, the SV application either succeeds submitting the command, fails because of contention or realises the command has already been submitted by another SV.
 Each automation trigger already includes a staleness check to determine if the associated task has already been completed or archived. 
 
 A new metric named `splice_trigger_attempted_total` is added to monitor trigger failures caused by contention and help in choosing good delay and backoff parameters.
