@@ -1,55 +1,64 @@
-Please make a copy of this folder for any new CIP. Any artifacts for that CIP should go inside that folder. 
-
-More information can be found in [CIP-0000](../../cips/cip-0000/cip-0000.md).
-
-## Title
+## CIP XXXX
 
 <pre>
-  CIP: <CIP number, or "?" before being assigned>
-* Layer: <TBD> [TBD see Layer definition cip-XXXX](../../cips/blob/main/cip-XXXX).
-  Title: <CIP title; maximum 44 characters>
-  Author: <list of authors' real names>
-* Discussions-To: <email address>
-* Comments-Summary: <summary tone>
-* Comments-URI: <links to wiki page for comments>
-  Status: <Draft | Active | Proposed | Deferred | Rejected |
-           Withdrawn | Final | Replaced | Obsolete>
-  Type: <Standards Track | Governance | Tokenomics | Process | Informational>
-  Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
-  License: <abbreviation for approved license(s)>
-* License-Code: <abbreviation for code under different approved license(s)>
-* Post-History: <dates of postings to [https://lists.sync.global/g/cip-discuss] mailing list, or link to thread in mailing list archive>
-* Requires: <CIP number(s)>
-* Replaces: <CIP number>
-* Superseded-By: <CIP number>
+ CIP: CIP XXXX
+ Title: Bootstrap splice node from non-zero round
+ Author: Julien Tinguely
+ Comments-Summary: No comments yet
+ Status: Draft
+ Type: Standards Track
+ Created: 2025-06-30
+ Approved: ?
+ License: CC0-1.0
 </pre>
 
 ## Abstract
 
-A short (~200 word) description of the technical issue being addressed.
+This CIP proposes modifications to the network's bootstrapping process, enabling SV nodes to bootstrap from a configured non-zero round. 
+Currently, all SV nodes initiate from round 0.
+We aim to have network resets that preserve the historical round progression, rather than reverting to round zero.
+
+## Specification
+
+### Daml
+
+A new optional argument `initialRound` is added to the `DsoRules_Bootstrap` choice. When provided, this value is used as the initial round in the network.
+
+### SV Application
+
+The SV Application is modified so that it reads the new optional flag `SPLICE_APP_SV_INITIAL_ROUND` and pass its value
+as argument of the Daml choice `DsoRules_Bootstrap`.
+
+### Scan Application
+
+The `ScanAggregator` component within the Scan Application is updated to consider the `initialRound` as the first round. 
+Instead of backfilling and aggregating data from round 0, the initial round will determine the starting point.
+Scans will read `initialRound` from the SV's user metadata.
+
+## Motivations
+
+The main motivation for this change is to reset TestNet with an initial round close to the one running in MainNet for the upcoming TestNet reset scheduled in September.
+MainNet continuously progresses through rounds and forcing TestNet to restart from round 0 creates a significant gap.
+We want it to align with MainNet.
+
+### Risks and mitigations
+
+On every SV Application initialization, it checks whether the configured initialRound matches its sponsor SV's initial round
+to ensure all SV Applications use the same round. This round is dumped into its user metadata so that scan can read it.
+SV applications that do not set the initial round correctly will not be able to start. 
+
+## Backwards compatibility
+
+If no `SPLICE_APP_SV_INITIAL_ROUND` is configured, the round is automatically set to 0.
+
+## Reference implementation
+
+An early version of this implementation can be found in [splice - feature/bootstrap-with-non-zero-round](https://github.com/hyperledger-labs/splice/tree/feature/bootstrap-with-non-zero-round)
 
 ## Copyright
 
 This CIP is licensed under CC0-1.0: [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
 
-Note: other licenses are avilable see recommendations in [cip-0000](../../cips/cip-0000/cip-0000.md)
+## Changelog
 
-## Specification
-
-The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current Global Synchronizer platforms.
-
-## Motivation
-
-The motivation is critical for CIPs that want to change the Global Synchronizer protocol. It should clearly explain why the existing protocol is inadequate to address the problem that the CIP solves.
-
-## Rationale
-
-The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work. The rationale should provide evidence of consensus within the community and discuss important objections or concerns raised during discussion.
-
-## Backwards compatibility
-
-All CIPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The CIP must explain how the author proposes to deal with these incompatibilities.
-
-## Reference implementation
-
-The reference implementation must be completed before any CIP is given status "Final", but it need not be completed before the CIP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code. The final implementation must include test code and documentation appropriate for the Global Synchronizer protocol.
+* **2025-06-30:** Initial draft of the proposal.
