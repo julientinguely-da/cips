@@ -1,4 +1,4 @@
-Please make a copy of this folder for any new CIP. Any artifacts for that CIP should go inside that folder.
+Please make a copy of this folder for any new CIP. Any artifacts for that CIP should go inside that folder. 
 
 More information can be found in [CIP-0000](../../cips/cip-0000/cip-0000.md).
 
